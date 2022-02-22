@@ -167,8 +167,11 @@ def get_stream(X_ref, Y_ref, tg_X1, tg_Y1, tg_X2, tg_Y2, drift_bool, batch_size)
         idx = np.random.choice(list(domain_idx.keys()))
         X, Y = domain_idx[idx]
 
-        # get batch size
-        _batch_size = min(X.shape[0], batch_size)
+        # abandon batches with fewer samples 
+        if X.shape[0] < batch_size:
+            print("Popped idx: %s" % idx)
+            domain_idx.pop(idx)
+            continue
 
         # randomly sample without replacement 
         sample_idx = np.random.choice(range(X.shape[0]), size=_batch_size, replace=False)
