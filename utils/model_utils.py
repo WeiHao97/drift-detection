@@ -30,6 +30,7 @@ def eval_model(model, dataloader, device):
 
     time_elapsed = time.time() - since
     print('val Acc: {:4f}'.format(epoch_acc))
+    return epoch_acc
 
  
 def train_model(model, dataloader, dataset_sizes, criterion, optimizer, scheduler, num_epochs,device):

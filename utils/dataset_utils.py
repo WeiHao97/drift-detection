@@ -53,6 +53,53 @@ def read_dataset(path,label_dic):
     return np.array(X), np.array(Y)
 
 
+def load_test_set(test_filenames, domain_dir_path, label_dic):
+    """
+    Given a list of test_filenames, form the 
+    X, Y datasets for training and testing
+    """
+    X = []
+    Y = []
+
+    for filename in test_filenames:
+
+        label, _ = filename.split("/")
+        num_label = label_dic[label]
+        Y.append(num_label)
+
+        # get the img path, read in the image, and append
+        img_file_path = os.path.join(domain_dir_path, filename)
+        img = np.array(Image.open(img_file_path))
+        X.append(img)
+
+    trainX = []
+    trainY = []
+    labels = list(label_dic.keys())
+
+    # iterate through the class labels
+    for label in labels:
+
+        # path to label directory
+        label_dir = os.path.join(domain_dir_path, label)
+
+        # iterate through images in directory
+        for img_file in os.listdir(label_dir):
+
+            if os.path.join(label, img_file) in test_filenames:
+                continue
+            
+            # append the label for this image
+            trainY.append(label_dic[label])
+            # get the img path, read in the image, and append
+            img_file_path = os.path.join(label_dir, img_file)
+            img = np.array(Image.open(img_file_path))
+            trainX.append(img)
+
+
+    return {'x':np.array(trainX), 'y':np.array(trainY)}, {'x':np.array(X), 'y':np.array(Y)}
+
+
+
 def class_count(Y):
     """
     Given the labels vector for a dataset, return
@@ -104,6 +151,42 @@ def read_datasets(s_path, t1_path, t2_path,label_dic):
     X_t1, Y_t1 = read_dataset(t1_path,label_dic)
     X_t2, Y_t2 = read_dataset(t2_path,label_dic)
     return {'source':{'x':X_s, 'y':Y_s}, 'target1':{'x':X_t1, 'y':Y_t1}, 'target2':{'x':X_t2, 'y':Y_t2}}
+
+
+def get_stream(X_ref, Y_ref, tg_X1, tg_Y1, tg_X2, tg_Y2, drift_bool, batch_size):
+    """
+    Return a generator over three domains
+    """
+    domain_idx = {0:[np.copy(X_ref), np.copy(Y_ref)],
+                  1:[np.copy(tg_X1), np.copy(tg_Y1)],
+                  2:[np.copy(tg_X2), np.copy(tg_Y2)]}
+
+    while len(domain_idx) > 0:
+    
+        # randomly select a domain
+        idx = np.random.choice(list(domain_idx.keys()))
+        X, Y = domain_idx[idx]
+
+        print("size of idx %s before %s " % (idx, X.shape[0]))
+
+        # get batch size
+        _batch_size = min(X.shape[0], batch_size)
+
+        # randomly sample without replacement 
+        sample_idx = np.random.choice(range(X.shape[0]), size=_batch_size, replace=False)
+        yield X[sample_idx], Y[sample_idx], idx
+    
+        # remove returned samples from pool
+        X = np.delete(X, sample_idx, axis=0)
+        Y = np.delete(Y, sample_idx)
+
+        if len(X) == 0:
+            print("Popped idx: %s" % idx)
+            domain_idx.pop(idx)
+        else:
+            domain_idx[idx] = [X, Y]
+
+        print("size of idx %s after %s:" % (idx, X.shape[0]))
 
 
 def create_dataloader(dataset, data_transforms, source = True, num_ref_per_class = 30, batch_size = 4):

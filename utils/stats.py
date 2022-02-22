@@ -1,9 +1,14 @@
 """Utils for Statistics"""
 
-def drift_statistics(dataloader, model, drift_detector):
+from timeit import default_timer as timer
+import torch
+
+
+def drift_statistics(dataloader, model, drift_detector, device):
     accs = []
     times = []
     drift_pos = []
+    ks_stats = []
     start = timer()
     for inputs, y in dataloader:
         inputs = inputs.to(device)
@@ -14,7 +19,8 @@ def drift_statistics(dataloader, model, drift_detector):
         times.append(timer())
         accs.append((outputs.max(1)[1] == y).float().sum()/len(y))
         drift_pos.append(result['is_drift'])
-    return accs, drift_pos, times, start
+        ks_stats.append(result['distance'])
+    return accs, drift_pos, times, start, ks_stats
 
 
 def confusion_matrix(accs, drift_pos, threshold):
