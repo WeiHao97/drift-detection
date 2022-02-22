@@ -175,7 +175,8 @@ def run():
 		for idx in range(0, 3):
 			logging.info("statistics for domain %s : min/max/avg/std - %s/%s/%s/%s", 
 				          idx, min(domain_ks[idx]), max(domain_ks[idx]), 
-				          sum(domain_ks[idx])/len(domain_ks[idx]), np.std(np.array(domain_ks[idx])))
+				          sum(domain_ks[idx])/len(domain_ks[idx]), 
+				          np.std(np.array(domain_ks[idx])))
 
 		time_per_batch.append(batch_time)
 
@@ -183,7 +184,7 @@ def run():
 
 		logging.info("Confusion Matrix: TP/FP/FN/TN - %s/%s/%s/%s", t_p, f_p, f_n, t_n)
 
-	print("Time per batch: %s", time_per_batch)
+	logging.info("Time per batch: %s", time_per_batch)
 
 
 

@@ -167,8 +167,6 @@ def get_stream(X_ref, Y_ref, tg_X1, tg_Y1, tg_X2, tg_Y2, drift_bool, batch_size)
         idx = np.random.choice(list(domain_idx.keys()))
         X, Y = domain_idx[idx]
 
-        print("size of idx %s before %s " % (idx, X.shape[0]))
-
         # get batch size
         _batch_size = min(X.shape[0], batch_size)
 
@@ -186,7 +184,6 @@ def get_stream(X_ref, Y_ref, tg_X1, tg_Y1, tg_X2, tg_Y2, drift_bool, batch_size)
         else:
             domain_idx[idx] = [X, Y]
 
-        print("size of idx %s after %s:" % (idx, X.shape[0]))
 
 
 def create_dataloader(dataset, data_transforms, source = True, num_ref_per_class = 30, batch_size = 4):

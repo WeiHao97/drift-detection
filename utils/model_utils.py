@@ -29,7 +29,6 @@ def eval_model(model, dataloader, device):
     epoch_acc = running_corrects.double() / dataset_size
 
     time_elapsed = time.time() - since
-    print('val Acc: {:4f}'.format(epoch_acc))
     return epoch_acc
 
  
