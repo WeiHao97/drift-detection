@@ -129,7 +129,7 @@ def run():
 	test_dataset = customDS(ref_test['x'], ref_test['y'], data_transforms['test'])
 	test_loader = DataLoader(test_dataset, batch_size=20, shuffle=True)
 
-	initial_accuracy = eval_model(model, test_loader, device)
+	initial_accuracy = eval_model(model, test_loader, device).item()
 	logging.info("initial accuracy of trained model: %s", initial_accuracy)
 
 
