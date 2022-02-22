@@ -16,7 +16,7 @@ import warnings
 
 warnings.filterwarnings('ignore')
 
-from drift_detection import *
+from utils.drift_detection import *
 from utils.model_utils import *
 from utils.dataset_utils import *
 from utils.stats import *

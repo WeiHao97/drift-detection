@@ -4,11 +4,12 @@ from timeit import default_timer as timer
 import torch
 from scipy.stats import entropy
 from scipy.special import softmax
+import numpy as np
 
 def uncertainty(logits):
     return entropy(softmax(logits, axis=-1), axis=-1)
 
-def drift_statistics(dataloader, model, drift_detector):
+def drift_statistics(dataloader, model, drift_detector, device):
     accs = []
     times = []
     drift_pos = []
