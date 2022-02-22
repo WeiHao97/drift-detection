@@ -2,13 +2,17 @@
 
 from timeit import default_timer as timer
 import torch
+from scipy.stats import entropy
+from scipy.special import softmax
 
+def uncertainty(logits):
+    return entropy(softmax(logits, axis=-1), axis=-1)
 
-def drift_statistics(dataloader, model, drift_detector, device):
+def drift_statistics(dataloader, model, drift_detector):
     accs = []
     times = []
     drift_pos = []
-    ks_stats = []
+    uncertainties = np.asarray([])
     start = timer()
     for inputs, y in dataloader:
         inputs = inputs.to(device)
@@ -19,8 +23,8 @@ def drift_statistics(dataloader, model, drift_detector, device):
         times.append(timer())
         accs.append((outputs.max(1)[1] == y).float().sum()/len(y))
         drift_pos.append(result['is_drift'])
-        ks_stats.append(result['distance'])
-    return accs, drift_pos, times, start, ks_stats
+        uncertainties = np.concatenate((uncertainties,uncertainty(outputs)))
+    return accs, drift_pos, uncertainties, times, start
 
 
 def confusion_matrix(accs, drift_pos, threshold):
