@@ -163,7 +163,7 @@ def run():
 			batch_loader = DataLoader(batch_set, batch_size=batch_size, shuffle=True)
 
 			# accs and drift_pos are lists containing one number
-			accs, drift_pos, times, start, ks_stats = drift_statistics(batch_loader, model, drift_detector, device)
+			accs, drift_pos, uncertainties, times, start, ks_stats = drift_statistics(batch_loader, model, drift_detector, device)
 
 			batch_time += times[-1] - start
 			accuracy += accs
