@@ -26,9 +26,9 @@ class customDS(torch.utils.data.Dataset):
         return x,y
 
 
-def read_dataset(path,label_dic):
+def read_dataset(path, label_dic):
     """
-      Given a path, returns arrays X and Y
+    Given a path, returns arrays X and Y
     """
     labels = list(label_dic.keys())
     X = []
@@ -153,7 +153,7 @@ def read_datasets(s_path, t1_path, t2_path,label_dic):
     return {'source':{'x':X_s, 'y':Y_s}, 'target1':{'x':X_t1, 'y':Y_t1}, 'target2':{'x':X_t2, 'y':Y_t2}}
 
 
-def get_stream(X_ref, Y_ref, tg_X1, tg_Y1, tg_X2, tg_Y2, drift_bool, batch_size):
+def get_stream(X_ref, Y_ref, tg_X1, tg_Y1, tg_X2, tg_Y2, batch_size):
     """
     Return a generator over three domains
     """
@@ -174,7 +174,7 @@ def get_stream(X_ref, Y_ref, tg_X1, tg_Y1, tg_X2, tg_Y2, drift_bool, batch_size)
             continue
 
         # randomly sample without replacement 
-        sample_idx = np.random.choice(range(X.shape[0]), size=_batch_size, replace=False)
+        sample_idx = np.random.choice(range(X.shape[0]), size=batch_size, replace=False)
         yield X[sample_idx], Y[sample_idx], idx
     
         # remove returned samples from pool
