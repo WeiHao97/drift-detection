@@ -1,4 +1,5 @@
-# Drift Detection on Office 31 Dataset
+
+# Drift Detection
 
 First, create a virtual environment and install all dependencies:
 ``` 
@@ -6,6 +7,6 @@ python3 -m venv venv
 . venv/bin/activate
 pip install -r requirements.txt
 ```
-To run a streaming simulation with the Amazon domain as the source domain, invoke:
+To run a streaming simulation on the office dataset (without online training), invoke the following:
 
-`python3 amazon_ref.py`
+`python3 office_simulator.py <path to reference samples> <path to first set of target samples> <path to second set of target samples> <trained model> <test set filenames for reference distribution>`

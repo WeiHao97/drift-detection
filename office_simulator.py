@@ -13,6 +13,7 @@ import time
 import copy
 import logging
 import warnings
+import sys
 
 warnings.filterwarnings('ignore')
 
@@ -82,7 +83,7 @@ def compute_logits(model, device, s_loader):
 
 def run():
 	"""
-	Run streaming simulation on all batch sizes
+	Run streaming simulation on all batch sizes without online training
 
 	If we are loading a trained model, we need to read in the test set,
 	which will be used for the stream
@@ -93,28 +94,27 @@ def run():
 		label_dic = json.load(infile)
 
 	# set paths to datasets
-	# amazon is the source/reference domain
-	s_path = '../amazon/images'
-	t1_path = '../dslr/images' 
-	t2_path = '../webcam/images'
+	s_path = sys.argv[1] # '../amazon/images'
+	t1_path = sys.argv[2] # '../dslr/images' 
+	t2_path = sys.argv[3] # '../webcam/images'
 
 	# read in the datasets -> returns a dictionary in this format
 	# {'source':{'x':X_s, 'y':Y_s}, 'target1':{'x':X_t1, 'y':Y_t1}, 'target2':{'x':X_t2, 'y':Y_t2}}
 	# we only need the data at target1 and target2
 	datasets = read_datasets(s_path, t1_path, t2_path, label_dic)
 
-	logging.info("loaded dslr dataset, size: %s", datasets["target1"]['x'].shape[0])
-	logging.info("loaded webcam dataset, size: %s", datasets["target2"]["x"].shape[0])
+	logging.info("loaded first target dataset, size: %s", datasets["target1"]['x'].shape[0])
+	logging.info("loaded second target dataset, size: %s", datasets["target2"]["x"].shape[0])
 
 	# given the test image filenames, read in the test data
-	test_filenames = np.load("models/amazon_test_filenames.npy")
+	test_filenames = np.load(sys.argv[4]) # "models/amazon_test_filenames.npy"
 	ref_train, ref_test = load_test_set(test_filenames, s_path, label_dic)
 
-	logging.info("loaded training set of size: %s", ref_train['x'].shape[0])
-	logging.info("loaded test reference set of size: %s", ref_test['x'].shape[0])
+	logging.info("loaded ref training set of size: %s", ref_train['x'].shape[0])
+	logging.info("loaded ref test reference set of size: %s", ref_test['x'].shape[0])
 
 	# load trained model on reference domain
-	model = load_model("models/amazon_new.pt")
+	model = load_model(sys.argv[5]) # "models/amazon_new.pt"
 	device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 	model.to(device)
 
@@ -137,25 +137,27 @@ def run():
 	# SIMULATIONS START HERE #
 	##########################
 
-	time_per_batch = []
+	if not os.path.isdir("./out"):
+		os.mkdir("./out")
+
+	time_per_batch = {}
+	confusion = {batch_size:{"fpr":[], "tpr":[]} for batch_size in batch_sizes}
 
 	for batch_size in batch_sizes:
 
 		logging.info("starting simulation for batch size %s", batch_size)
 
-		domain_ks = {0:[], 1:[], 2:[]}
-
 		# create stream
-		drift_bool = {0:False, 1:True, 2:True}
 		stream = get_stream(ref_test['x'], ref_test['y'], datasets["target1"]['x'], 
 			                datasets["target1"]['y'], datasets["target2"]['x'],
-			                datasets["target2"]['y'], drift_bool, batch_size)
+			                datasets["target2"]['y'], batch_size)
 		
 		logging.info("created stream")
 
 		batch_time = 0
-		accuracy = []
-		drifts = []
+		accuracy = {0:[], 1:[], 2:[]}
+		drifts = {0:[], 1:[], 2:[]}
+		entropies = {0:[], 1:[], 2:[]}
 		for batch_X, batch_Y, domain_idx in stream:
 
 
@@ -163,31 +165,48 @@ def run():
 			batch_loader = DataLoader(batch_set, batch_size=batch_size, shuffle=True)
 
 			# accs and drift_pos are lists containing one number
-			accs, drift_pos, uncertainties, times, start, ks_stats = drift_statistics(batch_loader, model, drift_detector, device)
+			accs, drift_pos, uncertainties, times, start = drift_statistics(batch_loader, model, drift_detector, device)
 
 			batch_time += times[-1] - start
-			accuracy += accs
-			drifts += drift_pos
+			accuracy[domain_idx].append(accs[0].item())
+			drifts[domain_idx].append(drift_pos[0])
+			entropies[domain_idx].append(uncertainties[0])
+			
 
-			domain_ks[domain_idx] += ks_stats
+		# append time to process batch
+		time_per_batch[batch_size] = batch_time
 
-		# print p-value statistics
-		for idx in range(0, 3):
-			logging.info("statistics for domain %s : min/max/avg/std - %s/%s/%s/%s", 
-				          idx, min(domain_ks[idx]), max(domain_ks[idx]), 
-				          sum(domain_ks[idx])/len(domain_ks[idx]), 
-				          np.std(np.array(domain_ks[idx])))
 
-		time_per_batch.append(batch_time)
+		# get false positive rate and true positive rate
+		fpr, tpr = confusion_matrix(accuracy, drifts, initial_accuracy - 0.10)
+		confusion[batch_size]["fpr"].append(fpr)
+		confusion[batch_size]["tpr"].append(tpr)
 
-		t_p, f_p, f_n, t_n = confusion_matrix(accuracy, drifts, initial_accuracy - 0.10)
+		logging.info("Confusion Matrix: FPR/TPR - %s/%s", fpr, tpr)
 
-		logging.info("Confusion Matrix: TP/FP/FN/TN - %s/%s/%s/%s", t_p, f_p, f_n, t_n)
+		# save batch data
+		with open("./out/accuracy_%s.json" % batch_size, "w") as file:
+			json.dump(accuracy, file)
+		with open("./out/drifts_%s.json" % batch_size, "w") as file:
+			json.dump(drifts, file)
+		with open("./out/entropies_%s.json" % batch_size, "w") as file:
+			json.dump(entropies, file)
+
+
+	# save evalution time and TPR/FPR 
+	with open("./out/time_per_batch.json", "w") as file:
+		json.dump(time_per_batch, file)
+	with open("./out/confusion.json", "w") as file:
+		json.dump(confusion, file)
+
 
 	logging.info("Time per batch: %s", time_per_batch)
-
 
 
 if __name__ == '__main__':
 
 	run()
+
+
+
+
