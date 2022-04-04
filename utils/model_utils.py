@@ -33,7 +33,7 @@ def eval_model(model, dataloader, device):
     return epoch_acc
 
  
-def train_model(model, dataloader, dataset_sizes, criterion, optimizer, scheduler, num_epochs,device):
+def train_model(model, dataloader, dataset_sizes, criterion, optimizer, scheduler, num_epochs, device):
     since = time.time()
 
     best_model_wts = copy.deepcopy(model.state_dict())
