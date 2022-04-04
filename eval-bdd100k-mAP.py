@@ -1,3 +1,4 @@
+import copy
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
@@ -23,11 +24,11 @@ logging.getLogger().setLevel(logging.DEBUG)
 ##########################
 
 
-train_path = "../bdd100k/images/100k/train"
-val_path = "../bdd100k/images/100k/val"
+train_path = "bdd100k/images/100k/train"
+val_path = "/local/rcs/lnh2116/val"
 
-train_json = "../bdd100k/images/100k/labels/det_train.json"
-val_json = "../bdd100k/images/100k/labels/det_val.json"
+train_json = "bdd100k/images/100k/labels/det_train.json"
+val_json = "/local/rcs/lnh2116/det_val.json"
 
 
 label_dict = {1: 'bicycle',
@@ -41,7 +42,6 @@ label_dict = {1: 'bicycle',
 
 label_dict = {label_dict[item]:item for item in label_dict}
 
-weather_domains = ["rainy", "snowy", "clear", "overcast", "partly cloudy", "foggy"]
 
 
 class bdd100k_dataset(torch.utils.data.Dataset):
@@ -87,7 +87,7 @@ class bdd100k_dataset(torch.utils.data.Dataset):
 			boxes.append([x1, y1, x2, y2])
 			categories.append(label_dict[item["category"]])
 			crowded.append((False if "crowd" not in item["attributes"] else item["attributes"]["crowd"]))
-			areas.append(abs(x1 - x2) * abs(y1 - y2))
+			areas.append(abs(x2 - x1 + 1) * abs(y2 - y1 + 1))
 		
 		target["boxes"] = torch.tensor(boxes, dtype=torch.float32)
 		
@@ -100,71 +100,64 @@ class bdd100k_dataset(torch.utils.data.Dataset):
 
 
 def collate_fn(batch):
-	return tuple(zip(*batch))
+    return tuple(zip(*batch))
 
 
-def train_model(model, dataloader,
-				optimizer, scheduler, 
-				num_epochs, device):
-	
-	# switch to training mode
-	model.train()
-	
-	# send params to device
-	model = model.to(device)
-
-	for epoch in range(num_epochs):
-		
-		logging.info("train_model --- epoch: %s" % epoch)
-
-		# train for one epoch, printing every 10 iterations
-		train_one_epoch(model, optimizer, 
-						dataloader, device,
-						epoch, print_freq=10)
-
-		torch.save(model.state_dict(), "models/faster-rcnn.pth")
-		logging.info("saved trained model")
-		
-		# update learning rate
-		scheduler.step()
-
-	return model
-
-
-def get_model():
+def eval(model, device):
 	"""
-	Train model on clear domain and save it
+	Get mAP scores for each object category
 	"""
-
-	with open(train_json) as file:
-		train_labels = json.load(file)
-
-	trainX_filenames = []
-	_train_json = []
-
-	# get all training images
-	for item in train_labels:
-
-		if "labels" not in item:
-			continue
-
-		objects = [data["category"] for data in item["labels"] if data["category"] in label_dict]
-		if len(objects) == 0:
-			continue
-
-		trainX_filenames.append(item["name"])
-		_train_json.append(item)
-
-	assert len(trainX_filenames) == len(_train_json)
-	logging.info("Number of training samples: %s" % len(trainX_filenames))
-
-	dataset = bdd100k_dataset(trainX_filenames, 
-							  _train_json, 
-							  train_path)
+	with open(val_json) as file:
+		val_labels = json.load(file)
 	
-	loader = DataLoader(dataset, batch_size=16,
-						shuffle=True, 
-						collate_fn=collate_fn)
+	# for each object category
+	for object_category in label_dict:   
+	    ##################################
+		    # Get all validation images and  #
+		    # create dataloader              #
+		    ##################################
+		    
+		filenames = []
+		_json = []
+	    
+		copy_val_labels = copy.deepcopy(val_labels)
+	    
+		# get all images that contain objects in this category
+		for idx in range(len(copy_val_labels)):
+	        
+			item = copy_val_labels[idx]
+	        
+			if "labels" not in item:
+				continue
+		        
+			# if the image contains the object
+			objects = item["labels"]
+			objects = [obj for obj in objects if obj["category"] == object_category]
+			if len(objects) > 0:
+				filenames.append(item["name"])
+				item["labels"] = objects
+				_json.append(item)
+	            
+		assert len(filenames) == len(_json)
+		print("Number of samples with %s: %s" % (object_category, len(filenames)))
+		    
+		dataset = bdd100k_dataset(filenames, 
+	                              _json, 
+	                              val_path)
+
+		loader = DataLoader(dataset, batch_size=16,
+	                        shuffle=True, 
+	                        collate_fn=collate_fn)
+	    
+	    #######################
+	    # evaluate on dataset #
+	    #######################
+	    
+		evaluate(model, loader, device=device)
+
+
+
+if __name__ == "__main__":
 
 	# Instantiate pretrained model
 	model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
@@ -177,34 +170,14 @@ def get_model():
 	# replace the pre-trained head with a new one
 	model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
 
-	# Train the model on "clear" images
+	model.load_state_dict(torch.load("models/faster-rcnn.pth"))
 
-	# Observe that all parameters are being optimized
-	optimizer = torch.optim.SGD(model.parameters(), lr=0.005,
-								momentum=0.9, weight_decay=0.0005)
-
-	# Decay LR by a factor of 0.1 every 2 epochs
-	scheduler = torch.optim.lr_scheduler.StepLR(optimizer,
-												step_size=5,
-												gamma=0.1)
-
-	num_epochs = 10
+	logging.info("loaded trained model")
 
 	device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-	model = train_model(model, loader,
-						optimizer, 
-						scheduler, 
-						num_epochs, device)
-
-	return model
-
-
-
-if __name__ == "__main__":
-
-	model = get_model()
-
+	model.to(device)
+	
+	eval(model, device)
 
 
 
