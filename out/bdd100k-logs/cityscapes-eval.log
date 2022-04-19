@@ -1,0 +1,207 @@
+(env) lnh2116@thor:~$ python3 eval-cityscapes-mAP.py
+INFO:root:loaded trained model
+INFO:root:evaluating on 1869 images with category bicycle
+creating index...
+index created!
+Test:  [  0/468]  eta: 1:49:59  model_time: 13.3591 (13.3591)  evaluator_time: 0.0098 (0.0098)  time: 14.1010  data: 0.6874  max mem: 1674
+Test:  [100/468]  eta: 0:09:47  model_time: 0.8412 (0.9590)  evaluator_time: 0.0128 (0.0176)  time: 1.4777  data: 0.5903  max mem: 1674
+Test:  [200/468]  eta: 0:06:50  model_time: 0.8293 (0.8971)  evaluator_time: 0.0117 (0.0173)  time: 1.4704  data: 0.5871  max mem: 1674
+Test:  [300/468]  eta: 0:04:13  model_time: 0.8397 (0.8746)  evaluator_time: 0.0157 (0.0181)  time: 1.4693  data: 0.5918  max mem: 1674
+Test:  [400/468]  eta: 0:01:41  model_time: 0.8348 (0.8655)  evaluator_time: 0.0129 (0.0182)  time: 1.4606  data: 0.5864  max mem: 1674
+Test:  [467/468]  eta: 0:00:01  model_time: 0.8201 (0.8597)  evaluator_time: 0.0111 (0.0178)  time: 1.4033  data: 0.5660  max mem: 1674
+Test: Total time: 0:11:38 (1.4919 s / it)
+Averaged stats: model_time: 0.8201 (0.8597)  evaluator_time: 0.0111 (0.0178)
+Accumulating evaluation results...
+DONE (t=0.76s).
+IoU metric: bbox
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.085
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.174
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.071
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.007
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.063
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.175
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.131
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.261
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.325
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.026
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.293
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.587
+INFO:root:evaluating on 351 images with category bus
+creating index...
+index created!
+Test:  [ 0/88]  eta: 0:02:17  model_time: 0.9059 (0.9059)  evaluator_time: 0.0063 (0.0063)  time: 1.5658  data: 0.6113  max mem: 1674
+Test:  [87/88]  eta: 0:00:01  model_time: 0.8203 (0.8364)  evaluator_time: 0.0060 (0.0081)  time: 1.4316  data: 0.5784  max mem: 1674
+Test: Total time: 0:02:08 (1.4584 s / it)
+Averaged stats: model_time: 0.8203 (0.8364)  evaluator_time: 0.0060 (0.0081)
+Accumulating evaluation results...
+DONE (t=0.07s).
+IoU metric: bbox
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.182
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.258
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.204
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.016
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.086
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.246
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.391
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.515
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.524
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.052
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.339
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.667
+INFO:root:evaluating on 3309 images with category car
+creating index...
+index created!
+Test:  [  0/828]  eta: 0:17:36  model_time: 0.5370 (0.5370)  evaluator_time: 0.0957 (0.0957)  time: 1.2757  data: 0.5994  max mem: 1674
+Test:  [100/828]  eta: 0:14:57  model_time: 0.5047 (0.5277)  evaluator_time: 0.0744 (0.0875)  time: 1.2111  data: 0.5901  max mem: 1674
+Test:  [200/828]  eta: 0:12:52  model_time: 0.5213 (0.5261)  evaluator_time: 0.0672 (0.0874)  time: 1.2260  data: 0.5918  max mem: 1674
+Test:  [300/828]  eta: 0:10:50  model_time: 0.5276 (0.5262)  evaluator_time: 0.0844 (0.0874)  time: 1.2357  data: 0.5936  max mem: 1674
+Test:  [400/828]  eta: 0:08:46  model_time: 0.5287 (0.5267)  evaluator_time: 0.0685 (0.0868)  time: 1.2381  data: 0.5927  max mem: 1674
+Test:  [500/828]  eta: 0:06:43  model_time: 0.5379 (0.5277)  evaluator_time: 0.0944 (0.0864)  time: 1.2543  data: 0.5905  max mem: 1674
+Test:  [600/828]  eta: 0:04:35  model_time: 0.3713 (0.5038)  evaluator_time: 0.0727 (0.0858)  time: 1.0802  data: 0.5961  max mem: 1674
+Test:  [700/828]  eta: 0:02:32  model_time: 0.3631 (0.4847)  evaluator_time: 0.0817 (0.0863)  time: 1.0800  data: 0.5908  max mem: 1674
+Test:  [800/828]  eta: 0:00:32  model_time: 0.3573 (0.4703)  evaluator_time: 0.0978 (0.0871)  time: 1.0700  data: 0.5879  max mem: 1674
+Test:  [827/828]  eta: 0:00:01  model_time: 0.3543 (0.4665)  evaluator_time: 0.0718 (0.0868)  time: 1.0327  data: 0.5753  max mem: 1674
+Test: Total time: 0:16:09 (1.1705 s / it)
+Averaged stats: model_time: 0.3543 (0.4665)  evaluator_time: 0.0718 (0.0868)
+Accumulating evaluation results...
+DONE (t=3.28s).
+IoU metric: bbox
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.198
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.312
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.200
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.059
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.167
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.289
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.088
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.292
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.586
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.295
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.525
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.797
+INFO:root:evaluating on 604 images with category motorcycle
+creating index...
+index created!
+Test:  [  0/151]  eta: 0:02:35  model_time: 0.3926 (0.3926)  evaluator_time: 0.0060 (0.0060)  time: 1.0307  data: 0.5891  max mem: 1674
+Test:  [100/151]  eta: 0:00:50  model_time: 0.3523 (0.3613)  evaluator_time: 0.0072 (0.0098)  time: 0.9723  data: 0.5846  max mem: 1674
+Test:  [150/151]  eta: 0:00:00  model_time: 0.3601 (0.3604)  evaluator_time: 0.0077 (0.0102)  time: 0.9862  data: 0.5876  max mem: 1674
+Test: Total time: 0:02:28 (0.9839 s / it)
+Averaged stats: model_time: 0.3601 (0.3604)  evaluator_time: 0.0077 (0.0102)
+Accumulating evaluation results...
+DONE (t=0.14s).
+IoU metric: bbox
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.099
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.208
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.085
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.019
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.088
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.156
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.199
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.318
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.348
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.063
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.298
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.530
+INFO:root:evaluating on 1278 images with category rider
+creating index...
+index created!
+Test:  [  0/320]  eta: 0:05:28  model_time: 0.3759 (0.3759)  evaluator_time: 0.0069 (0.0069)  time: 1.0272  data: 0.6015  max mem: 1674
+Test:  [100/320]  eta: 0:03:35  model_time: 0.3516 (0.3563)  evaluator_time: 0.0082 (0.0096)  time: 0.9752  data: 0.5848  max mem: 1674
+Test:  [200/320]  eta: 0:01:57  model_time: 0.3686 (0.3621)  evaluator_time: 0.0078 (0.0096)  time: 0.9914  data: 0.5852  max mem: 1674
+Test:  [300/320]  eta: 0:00:19  model_time: 0.3648 (0.3615)  evaluator_time: 0.0082 (0.0099)  time: 0.9850  data: 0.5828  max mem: 1674
+Test:  [319/320]  eta: 0:00:00  model_time: 0.3518 (0.3609)  evaluator_time: 0.0085 (0.0098)  time: 0.9575  data: 0.5716  max mem: 1674
+Test: Total time: 0:05:13 (0.9806 s / it)
+Averaged stats: model_time: 0.3518 (0.3609)  evaluator_time: 0.0085 (0.0098)
+Accumulating evaluation results...
+DONE (t=0.34s).
+IoU metric: bbox
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.108
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.211
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.098
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.007
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.101
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.196
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.188
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.321
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.343
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.039
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.336
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.567
+INFO:root:evaluating on 1952 images with category traffic light
+creating index...
+index created!
+Test:  [  0/488]  eta: 0:08:14  model_time: 0.3715 (0.3715)  evaluator_time: 0.0200 (0.0200)  time: 1.0132  data: 0.5799  max mem: 1674
+Test:  [100/488]  eta: 0:06:28  model_time: 0.3654 (0.3648)  evaluator_time: 0.0143 (0.0201)  time: 1.0063  data: 0.5918  max mem: 1674
+Test:  [200/488]  eta: 0:04:48  model_time: 0.3672 (0.3669)  evaluator_time: 0.0158 (0.0208)  time: 0.9952  data: 0.5803  max mem: 1674
+Test:  [300/488]  eta: 0:03:08  model_time: 0.3603 (0.3675)  evaluator_time: 0.0123 (0.0212)  time: 0.9956  data: 0.5877  max mem: 1674
+Test:  [400/488]  eta: 0:01:27  model_time: 0.3671 (0.3667)  evaluator_time: 0.0166 (0.0211)  time: 0.9982  data: 0.5842  max mem: 1674
+Test:  [487/488]  eta: 0:00:01  model_time: 0.3703 (0.3675)  evaluator_time: 0.0152 (0.0215)  time: 1.0046  data: 0.5853  max mem: 1674
+Test: Total time: 0:08:08 (1.0003 s / it)
+Averaged stats: model_time: 0.3703 (0.3675)  evaluator_time: 0.0152 (0.0215)
+Accumulating evaluation results...
+DONE (t=0.63s).
+IoU metric: bbox
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.052
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.119
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.040
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.027
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.088
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.146
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.051
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.141
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.189
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.096
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.326
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.445
+INFO:root:evaluating on 3284 images with category traffic sign
+creating index...
+index created!
+Test:  [  0/821]  eta: 0:13:20  model_time: 0.2853 (0.2853)  evaluator_time: 0.0381 (0.0381)  time: 0.9752  data: 0.6056  max mem: 1674
+Test:  [100/821]  eta: 0:10:41  model_time: 0.2325 (0.2341)  evaluator_time: 0.0441 (0.0464)  time: 0.8886  data: 0.5807  max mem: 1674
+Test:  [200/821]  eta: 0:09:14  model_time: 0.2328 (0.2346)  evaluator_time: 0.0485 (0.0485)  time: 0.8943  data: 0.5827  max mem: 1674
+Test:  [300/821]  eta: 0:07:44  model_time: 0.2328 (0.2345)  evaluator_time: 0.0373 (0.0485)  time: 0.8850  data: 0.5825  max mem: 1674
+Test:  [400/821]  eta: 0:06:15  model_time: 0.2327 (0.2348)  evaluator_time: 0.0425 (0.0483)  time: 0.8849  data: 0.5798  max mem: 1674
+Test:  [500/821]  eta: 0:04:46  model_time: 0.2327 (0.2347)  evaluator_time: 0.0408 (0.0479)  time: 0.8888  data: 0.5825  max mem: 1674
+Test:  [600/821]  eta: 0:03:17  model_time: 0.2328 (0.2349)  evaluator_time: 0.0476 (0.0483)  time: 0.8988  data: 0.5867  max mem: 1674
+Test:  [700/821]  eta: 0:01:47  model_time: 0.2336 (0.2352)  evaluator_time: 0.0441 (0.0478)  time: 0.8960  data: 0.5847  max mem: 1674
+Test:  [800/821]  eta: 0:00:18  model_time: 0.2334 (0.2352)  evaluator_time: 0.0450 (0.0478)  time: 0.8941  data: 0.5848  max mem: 1674
+Test:  [820/821]  eta: 0:00:00  model_time: 0.2337 (0.2352)  evaluator_time: 0.0396 (0.0478)  time: 0.8913  data: 0.5865  max mem: 1674
+Test: Total time: 0:12:12 (0.8921 s / it)
+Averaged stats: model_time: 0.2337 (0.2352)  evaluator_time: 0.0396 (0.0478)
+Accumulating evaluation results...
+DONE (t=2.15s).
+IoU metric: bbox
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.082
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.138
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.085
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.042
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.143
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.209
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.061
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.187
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.306
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.169
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.522
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.627
+INFO:root:evaluating on 443 images with category truck
+creating index...
+index created!
+Test:  [  0/111]  eta: 0:01:42  model_time: 0.2891 (0.2891)  evaluator_time: 0.0078 (0.0078)  time: 0.9227  data: 0.5838  max mem: 1674
+Test:  [100/111]  eta: 0:00:09  model_time: 0.2327 (0.2342)  evaluator_time: 0.0065 (0.0075)  time: 0.8529  data: 0.5854  max mem: 1674
+Test:  [110/111]  eta: 0:00:00  model_time: 0.2325 (0.2341)  evaluator_time: 0.0065 (0.0074)  time: 0.8388  data: 0.5739  max mem: 1674
+Test: Total time: 0:01:34 (0.8497 s / it)
+Averaged stats: model_time: 0.2325 (0.2341)  evaluator_time: 0.0065 (0.0074)
+Accumulating evaluation results...
+DONE (t=0.11s).
+IoU metric: bbox
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.147
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.234
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.151
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.022
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.092
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.215
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.354
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.486
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.503
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.166
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.368
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.673

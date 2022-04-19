@@ -1,17 +1,19 @@
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
-import os
 import json
 import logging
 import torchvision
 import torchvision.transforms as transforms
 import torch.nn as nn
 import warnings
-from engine import train_one_epoch, evaluate
+from utils.torch.engine import train_one_epoch, evaluate
 from torch.utils.data import TensorDataset, DataLoader
 from torchvision.models.detection import fasterrcnn_resnet50_fpn
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
+from torchvision.models.detection import FasterRCNN
+from torchvision.models.detection.rpn import AnchorGenerator
 from PIL import Image
 
 warnings.filterwarnings('ignore')
@@ -23,11 +25,11 @@ logging.getLogger().setLevel(logging.DEBUG)
 ##########################
 
 
-train_path = "../bdd100k/images/100k/train"
-val_path = "../bdd100k/images/100k/val"
+train_path = "/local/rcs/lnh2116/train"
+val_path = "/local/rcs/lnh2116/val"
 
-train_json = "../bdd100k/images/100k/labels/det_train.json"
-val_json = "../bdd100k/images/100k/labels/det_val.json"
+train_json = "/local/rcs/lnh2116/det_train.json"
+val_json = "/local/rcs/lnh2116/det_val.json"
 
 
 label_dict = {1: 'bicycle',
@@ -122,7 +124,11 @@ def train_model(model, dataloader,
 						dataloader, device,
 						epoch, print_freq=10)
 
-		torch.save(model.state_dict(), "models/faster-rcnn.pth")
+		torch.save({"model": model.state_dict(), 
+					"optimizer": optimizer.state_dict(), 
+					"scheduler": scheduler.state_dict()},
+					 "models/faster-rcnn-resnet18.pth")
+
 		logging.info("saved trained model")
 		
 		# update learning rate
@@ -133,7 +139,7 @@ def train_model(model, dataloader,
 
 def get_model():
 	"""
-	Train model on clear domain and save it
+	Train model on BDD100K dataset and save it
 	"""
 
 	with open(train_json) as file:
@@ -162,35 +168,38 @@ def get_model():
 							  _train_json, 
 							  train_path)
 	
-	loader = DataLoader(dataset, batch_size=16,
+	loader = DataLoader(dataset, batch_size=4,
 						shuffle=True, 
 						collate_fn=collate_fn)
 
 	# Instantiate pretrained model
-	model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
+	backbone = torchvision.models.detection.backbone_utils.resnet_fpn_backbone('resnet18', pretrained=True)
+	anchor_generator = AnchorGenerator(sizes=((64,), (128,), (256,), (512,), (1024,)), aspect_ratios=((0.5, 1.0, 2.0),) * 5)
 
 	# label 0 is reserved for the background class
 	num_classes = 9
 
-	in_features = model.roi_heads.box_predictor.cls_score.in_features
+	model = FasterRCNN(backbone, num_classes=num_classes, rpn_anchor_generator=anchor_generator)
+	
+	# use all available GPUs
+	model = nn.DataParallel(model, device_ids=[0, 1, 3, 2, 4, 5, 6, 7])
 
-	# replace the pre-trained head with a new one
-	model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
-
-	# Train the model on "clear" images
+	# load trained model
+	device = torch.device('cuda:0')
+	#model.load_state_dict(torch.load("models/faster-rcnn-wide_resnet101_2.pth", map_location=device)["model"])
+	model.to(device)
 
 	# Observe that all parameters are being optimized
-	optimizer = torch.optim.SGD(model.parameters(), lr=0.005,
-								momentum=0.9, weight_decay=0.0005)
+	optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
+	#optimizer.load_state_dict(torch.load("models/faster-rcnn-wide_resnet101_2.pth")["optimizer"])
 
 	# Decay LR by a factor of 0.1 every 2 epochs
 	scheduler = torch.optim.lr_scheduler.StepLR(optimizer,
 												step_size=5,
 												gamma=0.1)
+	#scheduler.load_state_dict(torch.load("models/faster-rcnn-wide_resnet101_2.pth")["scheduler"])
 
-	num_epochs = 10
-
-	device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+	num_epochs = 1
 
 	model = train_model(model, loader,
 						optimizer, 

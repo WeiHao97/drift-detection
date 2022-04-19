@@ -8,7 +8,7 @@ import torchvision
 import torchvision.transforms as transforms
 import torch.nn as nn
 import warnings
-from engine import train_one_epoch, evaluate
+from utils.torch.engine import train_one_epoch, evaluate
 from torch.utils.data import TensorDataset, DataLoader
 from torchvision.models.detection import fasterrcnn_resnet50_fpn
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
@@ -23,12 +23,8 @@ logging.getLogger().setLevel(logging.DEBUG)
 ##########################
 
 
-train_path = "../bdd100k/images/100k/train"
-val_path = "../bdd100k/images/100k/val"
-
-train_json = "../bdd100k/images/100k/labels/det_train.json"
-val_json = "../bdd100k/images/100k/labels/det_val.json"
-
+train_path = os.environ["TRAIN_PATH"]
+train_json = os.environ["TRAIN_JSON"]
 
 label_dict = {
                 1: "pedestrian",
