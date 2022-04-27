@@ -1,3 +1,4 @@
+import argparse
 import copy
 import numpy as np
 import matplotlib.pyplot as plt
@@ -18,14 +19,6 @@ from PIL import Image
 warnings.filterwarnings('ignore')
 
 logging.getLogger().setLevel(logging.DEBUG)
-
-##########################
-# Define global variables
-##########################
-
-
-val_path = os.environ["VAL_PATH"] #"/local/rcs/lnh2116/mapillary/validation/images"
-val_json = os.environ["VAL_JSON"] #"/local/rcs/lnh2116/mapillary/validation/v2.0/polygons"
 
 
 labels = {"human--rider--motorcyclist":"rider",
@@ -147,7 +140,7 @@ def _label_match(label, object_category):
 	return False
 
 
-def eval(model, device):
+def eval(model, device, val_path, val_json):
 	"""
 	Get mAP scores for each object category
 	"""
@@ -196,6 +189,15 @@ def eval(model, device):
 		evaluate(model, loader, device=device)
 
 
+def _get_args():
+	"""
+	Return val_path and val_json
+	"""
+	parser = argparse.ArgumentParser()
+	parser.add_argument("--paths", nargs=2)
+	args = parser.parse_args()
+	return args.paths
+
 
 if __name__ == "__main__":
 
@@ -217,7 +219,11 @@ if __name__ == "__main__":
 	device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 	model.to(device)
 
-	eval(model, device)
+	val_path, val_json = _get_args()
+
+	logging.info("parsed val_path %s val_json %s", val_path, val_json)
+
+	eval(model, device, val_path, val_json)
 
 
 
