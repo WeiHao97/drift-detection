@@ -1,4 +1,3 @@
-
 # Drift Detection
 
 
@@ -52,41 +51,29 @@ Download the model weights here and place the file in the `models` directory: ht
 Evaluate on the BDD100K validation set:
 
 ```
-export VAL_PATH=<path to validation set>
-export VAL_JSON=<path to labels/det_val.json>
-python3 eval-bdd100k.py
+python3 eval-bdd100k.py --paths <path to validation set> <path to labels/det_val.json>
 ```
 
 Evaluate on the Mapillary validation set:
 ```
-export VAL_PATH=<path to validation set>
-export VAL_JSON=<path to v2.0/polygons>
-python3 eval-mapillary.py
+python3 eval-mapillary.py --paths <path to validation set> <path to v2.0/polygons>
 ```
 
 To evaluate the model on the Indian Driving Dataset, first create the validation set:
 ```
-export IDD_val_path=<path to val.txt>
-export IDD_img_path=<path to dataset directory>
-export IDD_annotations_path=<path to annotations directory>
-python3 make idd-eval.py
+python3 make-idd-eval.py --paths <path to val.txt> <path to annotations directory> <path to dataset directory> <path to IDD>
 ```
 Then, run the evaluation script:
 ```
-export IMAGE_PATH=<path to eval-img>
-python3 eval-idd.py
+python3 eval-idd.py --paths <path to eval-img>
 ```
 
 Evaluate on Foggy Cityscapes (with attenuation coefficient of 0.02):
 ```
-export FINE_ANN=<path to fine annotations>
-export IMG_DIR=<path to leftImg8bit_transmittance>
-python3 eval-foggy-cityscapes.py
+python3 eval-foggy-cityscapes.py --paths <path to fine annotations> <path to leftImg8bit_transmittance>
 ```
 
 Evaluate on Cityscapes:
 ```
-export FINE_ANN=<path to fine annotations>
-export IMG_DIR=<path to leftImg8bit_transmittance>
-python3 eval-cityscapes.py
+python3 eval-cityscapes.py --paths <path to fine annotations> <path to leftImg8bit_transmittance>
 ```
