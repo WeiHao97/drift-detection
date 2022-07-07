@@ -1,3 +1,4 @@
+import argparse
 import copy
 import numpy as np
 import matplotlib.pyplot as plt
@@ -32,8 +33,8 @@ label_dict = {1: 'bicycle',
 
 label_dict = {label_dict[item]:item for item in label_dict}
 
-cityscapes_dir = os.environ["FINE_ANN"] #"../gtFine"
-img_dir = os.environ["IMG_DIR"] #"/local/rcs/lnh2116" #"../foggy_cityscapes/leftImg8bit_transmittance"
+cityscapes_dir = ""
+img_dir =  ""
 
 
 class foggy_cityscapes_dataset(torch.utils.data.Dataset):
@@ -198,7 +199,21 @@ def eval(model, device):
 		evaluate(model, loader, device=device)
 				
 
+def _get_args():
+	"""
+	Get cityscapes_dir and img_dir
+	"""
+	parser = argparse.ArgumentParser()
+	parser.add_argument("--paths", nargs=2)
+	args = parser.parse_args()
+	return args.paths
+
+
 if __name__ == "__main__":
+
+	cityscapes_dir, img_dir = _get_args()
+
+	logging.info("parsed cityscapes_dir %s img_dir %s", cityscapes_dir, img_dir)
 
 	# Instantiate pretrained model
 	model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
@@ -223,9 +238,5 @@ if __name__ == "__main__":
 
 	model.eval()
 	eval(model, device)
-
-
-
-
 
 

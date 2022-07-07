@@ -1,3 +1,4 @@
+import argparse
 import copy
 import numpy as np
 import matplotlib.pyplot as plt
@@ -19,16 +20,8 @@ warnings.filterwarnings('ignore')
 
 logging.getLogger().setLevel(logging.DEBUG)
 
-##########################
-# Define global variables
-##########################
 
-
-val_path = os.environ["VAL_PATH"]
-val_json = os.environ["VAL_JSON"]
-
-
-_label_dict = {1: 'bicycle',
+label_dict = {1: 'bicycle',
 			  2: 'bus',
 			  3: 'car',
 			  4: 'motorcycle',
@@ -101,7 +94,7 @@ def collate_fn(batch):
     return tuple(zip(*batch))
 
 
-def eval(model, device):
+def eval(model, device, val_path, val_json):
 	"""
 	Get mAP scores for each object category
 	"""
@@ -154,6 +147,15 @@ def eval(model, device):
 		evaluate(model, loader, device=device)
 
 
+def _get_args():
+	"""
+	Return val_path and val_json
+	"""
+	parser = argparse.ArgumentParser()
+	parser.add_argument("--paths", nargs=2)
+	args = parser.parse_args()
+	return args.paths
+
 
 if __name__ == "__main__":
 
@@ -175,7 +177,11 @@ if __name__ == "__main__":
 	device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 	model.to(device)
 	
-	eval(model, device)
+	val_path, val_json = _get_args()
+
+	logging.info("parsed val_path %s and val_json %s", val_path, val_json)
+
+	eval(model, device, val_path, val_json)
 
 
 

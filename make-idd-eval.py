@@ -1,3 +1,4 @@
+import argparse
 import copy
 import numpy as np
 import matplotlib.pyplot as plt
@@ -25,11 +26,10 @@ logging.getLogger().setLevel(logging.DEBUG)
 ##########################
 
 
-val_path = os.environ["IDD_val_path"] #"../IDD_Detection/val.txt"
-annotations_path = os.environ["IDD_annotations_path"] #"../IDD_Detection/Annotations"
-jpeg_path = os.environ["IDD_img_path"] #"../IDD_Detection/JPEGImages"
-
-idd_root = os.environ["IDD_root"] #"../IDD_Detection"
+val_path = ""
+annotations_path = ""
+jpeg_path = ""
+idd_root = ""
 
 
 label_dict = {1: 'bicycle',
@@ -142,8 +142,23 @@ def _make_validation_dir():
 	logging.info("saved idd-eval.json")
 
 
+def _get_args():
+	"""
+	Return val_path, annotations_path,
+	jpeg_path, idd_root
+	"""
+	parser = argparse.ArgumentParser()
+	parser.add_argument("--paths", nargs=4)
+	args = parser.parse_args()
+	return args.paths
+
 
 if __name__ == "__main__":
+
+	val_path, annotations_path, jpeg_path, idd_root = _get_args()
+
+	logging.info("parsed val_path %s annotations_path %s jpeg_path %s idd_root %s", val_path,
+					annotations_path, jpeg_path, idd_root)
 
 	_make_validation_dir()
 

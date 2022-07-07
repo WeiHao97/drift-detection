@@ -1,3 +1,4 @@
+import argparse
 import copy
 import numpy as np
 import matplotlib.pyplot as plt
@@ -20,12 +21,8 @@ warnings.filterwarnings('ignore')
 
 logging.getLogger().setLevel(logging.DEBUG)
 
-##########################
-# Define global variables
-##########################
 
-
-image_path = os.environ["IMAGE_PATH"] #"/local/rcs/lnh2116/eval-img"
+image_path = ""
 
 
 label_dict = {1: 'bicycle',
@@ -124,6 +121,15 @@ def eval(model, device):
 		evaluate(model, loader, device=device)
 
 
+def _get_args():
+	"""
+	Return image_path
+	"""
+	parser = argparse.ArgumentParser()
+	parser.add_argument("--paths", nargs=1)
+	args = parser.parse_args()
+	return args.paths[0]
+
 
 if __name__ == "__main__":
 
@@ -146,6 +152,10 @@ if __name__ == "__main__":
 
 	device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 	model.to(device)
+
+	image_path = _get_args()
+
+	logging.info("parsed image_path %s", image_path)
 
 	eval(model, device)
 
