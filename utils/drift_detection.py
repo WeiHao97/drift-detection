@@ -3,12 +3,13 @@
 """
 Created on Tue Feb  8 21:27:34 2022
 
-@author: lingxiaoli
+@authors: lingxiaoli, weihao
 """
 
 import numpy as np
 from scipy.stats import chi2_contingency, ks_2samp, entropy
 from scipy.special import softmax
+from scipy.special import logsumexp
 
 
 class ChiSquareDrift:
@@ -58,9 +59,14 @@ class ChiSquareDrift:
 
 class KSDrift:
 
-    def __init__(self, x_ref, threshold: float = .05):
+    def __init__(self, x_ref, threshold: float = .05,indicator = 'uncertainty',temperature = 1.):
+        assert (indicator not in ['uncertainty','MSP','OE','energy'],
+            f"indicator should be one of: 'uncertainty','MSP','OE','energy'")
+        self.temperature = temperature
+        self.indicator = indicator
         self.x_ref = self.process_data(x_ref)
         self.threshold = threshold
+        
 
     def updata_ref(self, x_ref):
         self.x_ref = self.process_data(x_ref)
@@ -69,7 +75,14 @@ class KSDrift:
         self.threshold = threshold
 
     def process_data(self, x):
-        return entropy(softmax(x, axis=-1), axis=-1)
+        if self.indicator == 'uncertainty':
+            return entropy(softmax(x, axis=-1), axis=-1)
+        elif self.indicator == 'MSP':
+            return -softmax(x, axis=-1).max(axis=-1)[0]
+        elif self.indicator == 'OE':
+            return x.mean(-1) - logsumexp(x, axis=-1)
+        else:
+            return -self.temperature*logsumexp(x/self.temperature, axis=-1)
 
     def feature_score_KS(self, x):
         x = self.process_data(x)
@@ -89,8 +102,8 @@ class KSDrift:
         cd['distance'] = dist
         return cd
 
-def drift_detection(x_ref, threshold: float = .05, method='KSDrift'):
+def drift_detection(x_ref, threshold: float = .05, method='KSDrift', indicator = 'uncertainty',temperature = 1.):
     if method == 'KSDrift':
-        return KSDrift(x_ref, threshold)
+        return KSDrift(x_ref, threshold,indicator,temperature)
     elif method == "ChiSquareDrift":
-        return ChiSquareDrift(x_ref, threshold)
+        return ChiSquareDrift(x_ref, threshold,indicator,temperature)

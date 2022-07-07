@@ -5,6 +5,7 @@ Model training and evaluation
 import torch
 import torch.nn as nn
 import time
+import copy
 
 
 def eval_model(model, dataloader, device):
